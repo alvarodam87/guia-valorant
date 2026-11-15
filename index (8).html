@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía Valorant paso a paso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: una sola columna; barra fija con las 8 partes arriba; cada parte es una línea de tiempo de pasos numerados */
+:root {
+  --bg: #0a131a;
+  --surface: #101e27;
+  --ink: #e1ecf1;
+  --muted: #8fa5b1;
+  --line: #1f3340;
+  --accent: #43bde6;        /* azul sheikah */
+  --accent-soft: #11303d;
+  --gold: #e3b748;          /* trifuerza */
+  --code-bg: #071017;
+  --code-ink: #d6e4ec;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.25; }
+code { font-family: var(--font-mono); font-size: 0.86em; }
+:not(pre) > code {
+  background: var(--accent-soft);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- cabecera ---------- */
+.masthead { border-bottom: 1px solid var(--line); background: var(--surface); }
+.masthead-inner {
+  max-width: 900px; margin: 0 auto; padding: 36px 20px 30px;
+  display: flex; gap: 18px; align-items: center;
+}
+.triforce { flex: none; width: 50px; height: 50px; }
+.masthead h1 { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 0; letter-spacing: 0.02em; }
+.masthead p { margin: 4px 0 0; color: var(--muted); }
+
+/* ---------- barra de partes ---------- */
+.parts-nav {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.parts-nav ol {
+  max-width: 900px; margin: 0 auto; padding: 10px 20px;
+  list-style: none; display: flex; flex-wrap: wrap; gap: 6px;
+  scrollbar-width: thin; position: relative;
+}
+.parts-nav a {
+  display: flex; gap: 8px; align-items: center; white-space: nowrap;
+  padding: 6px 12px; border-radius: 999px;
+  border: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 0.88rem;
+}
+.parts-nav a:hover { border-color: var(--accent); }
+.parts-nav a.active { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.parts-nav a.active .pn { color: var(--bg); }
+.parts-nav .pn { font-family: var(--font-display); font-weight: 700; color: var(--gold); }
+
+/* ---------- partes y pasos ---------- */
+main { max-width: 900px; margin: 0 auto; padding: 32px 20px 72px; display: grid; gap: 48px; }
+.part h2 {
+  display: flex; gap: 14px; align-items: baseline;
+  font-family: var(--font-display); font-size: 1.55rem; margin: 0 0 22px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--line);
+}
+.part h2 .pn { color: var(--gold); font-size: 1.9rem; }
+
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.step { position: relative; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 16px; padding-bottom: 26px; }
+.step::before {
+  content: ""; position: absolute; left: 17px; top: 36px; bottom: 0;
+  width: 2px; background: var(--line);
+}
+.step:last-child::before { display: none; }
+.step:last-child { padding-bottom: 0; }
+.dot {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent);
+  border: 1px solid var(--accent);
+  font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.step-in { min-width: 0; padding-top: 4px; }
+.step-in h3 { margin: 0 0 8px; font-size: 1.08rem; font-weight: 600; }
+.step-in p { margin: 0 0 10px; max-width: 70ch; }
+.url code { font-size: 0.9em; }
+.nota { font-size: 0.9rem; color: var(--muted); border-left: 3px solid var(--gold); padding-left: 10px; }
+
+/* ---------- código ---------- */
+.code {
+  margin: 10px 0 12px;
+  border-radius: 8px; overflow: hidden;
+  background: var(--code-bg); border: 1px solid var(--line);
+}
+.code figcaption {
+  display: flex; gap: 10px; align-items: center;
+  padding: 7px 8px 7px 14px;
+  background: #0c1922; border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted);
+}
+.code .file { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; color: var(--ink); }
+.copy {
+  font: inherit; font-family: var(--font-body); font-size: 0.78rem;
+  padding: 3px 10px; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--ink);
+}
+.copy:hover { border-color: var(--accent); }
+.copy.done { border-color: #6fd3a8; color: #6fd3a8; }
+.edit, .reset-code {
+  font: inherit; font-family: var(--font-body); font-size: 0.78rem;
+  padding: 3px 10px; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--ink);
+}
+.edit:hover, .reset-code:hover { border-color: var(--accent); }
+.edit[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.edited { color: var(--gold); font-family: var(--font-body); font-size: 0.75rem; }
+.code.editing { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.code code[contenteditable="true"] { outline: none; caret-color: var(--accent); display: block; min-height: 1.6em; }
+.edit-hint { margin: 0; padding: 6px 14px; font-size: 0.8rem; color: var(--muted); background: #0c1922; border-top: 1px solid var(--line); }
+.code figcaption { flex-wrap: wrap; }
+.actions { display: flex; gap: 6px; align-items: center; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
+.code pre { margin: 0; padding: 14px 16px; overflow-x: auto; }
+.code code { font-size: 0.84rem; line-height: 1.6; color: var(--code-ink); white-space: pre; }
+.t-kw { color: #f0a868; }
+.t-str { color: #9bd68a; }
+.t-com { color: #6f8794; font-style: italic; }
+.t-tag { color: #6cc8ef; }
+.t-dec { color: var(--gold); }
+.t-num { color: #d7a1f2; }
+
+footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 0 20px 40px; }
+
+@media (max-width: 560px) {
+  body { font-size: 15px; }
+  .masthead-inner { padding: 24px 16px; gap: 14px; }
+  .triforce { width: 38px; height: 38px; }
+  .parts-nav ol, main { padding-left: 16px; padding-right: 16px; }
+  .parts-nav ol { flex-wrap: nowrap; overflow-x: auto; }
+  .step { grid-template-columns: 30px minmax(0, 1fr); gap: 12px; }
+  .dot { width: 30px; height: 30px; font-size: 0.78rem; }
+  .step::before { left: 14px; top: 30px; }
+  .part h2 { font-size: 1.3rem; }
+  .code code { font-size: 0.78rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <svg class="triforce" viewBox="0 0 48 48" aria-hidden="true">
+      <g fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round">
+        <circle cx="24" cy="24" r="15"/>
+        <line x1="24" y1="2" x2="24" y2="13"/><line x1="24" y1="35" x2="24" y2="46"/>
+        <line x1="2" y1="24" x2="13" y2="24"/><line x1="35" y1="24" x2="46" y2="24"/>
+      </g>
+      <circle cx="24" cy="24" r="3.5" fill="var(--gold)"/>
+    </svg>
+    <div>
+      <h1>Guía Valorant paso a paso</h1>
+      <p>Examen Valorant con Ionic y Angular · 25 pasos</p>
+    </div>
+  </div>
+</header>
+
+<nav class="parts-nav" aria-label="Partes de la guía">
+  <ol><li><a href="#proyecto"><span class="pn">1</span>Crear el proyecto</a></li><li><a href="#modelo"><span class="pn">2</span>Modelo de datos</a></li><li><a href="#servicio"><span class="pn">3</span>Servicio, página y rutas</a></li><li><a href="#toast"><span class="pn">4</span>Servicio del toast</a></li><li><a href="#lista"><span class="pn">5</span>Lista de agentes</a></li><li><a href="#infinite"><span class="pn">6</span>Infinite scroll</a></li><li><a href="#sliding"><span class="pn">7</span>Sliding con toast</a></li><li><a href="#modal"><span class="pn">8</span>Modal del agente 11</a></li></ol>
+</nav>
+
+<main>
+  <section class="part" id="proyecto"><h2><span class="pn">1</span>Crear el proyecto</h2><ol class="steps"><li class="step" id="paso-1"><span class="dot" aria-hidden="true">1</span><div class="step-in"><h3>Crear el proyecto</h3><p>Desde la terminal, en la carpeta de proyectos. Cuando lo pregunte, elige <strong>Angular</strong> y <strong>Standalone</strong>.</p>
+<figure class="code"><figcaption><span class="file">Terminal</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de Terminal">Editar</button><button type="button" class="copy" aria-label="Copiar código de Terminal">Copiar</button></span></figcaption><pre><code>ionic start valorant blank</code></pre></figure>
+<p>Entra en la carpeta del proyecto:</p>
+<figure class="code"><figcaption><span class="file">Terminal</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de Terminal">Editar</button><button type="button" class="copy" aria-label="Copiar código de Terminal">Copiar</button></span></figcaption><pre><code>cd valorant</code></pre></figure></div></li><li class="step" id="paso-2"><span class="dot" aria-hidden="true">2</span><div class="step-in"><h3>Arrancar la app</h3><figure class="code"><figcaption><span class="file">Terminal</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de Terminal">Editar</button><button type="button" class="copy" aria-label="Copiar código de Terminal">Copiar</button></span></figcaption><pre><code>ionic serve</code></pre></figure>
+<p>Se abre en <code>http://localhost:8100</code>. Déjalo encendido mientras trabajas: cada vez que guardas, se recarga solo.</p></div></li><li class="step" id="paso-3"><span class="dot" aria-hidden="true">3</span><div class="step-in"><h3>Poner tu nombre en package.json</h3><p>Recuerda poner tu nombre en <code>author</code>, debajo de <code>version</code>.</p>
+<figure class="code"><figcaption><span class="file">package.json</span><span class="lang">JSON</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de package.json">Editar</button><button type="button" class="copy" aria-label="Copiar código de package.json">Copiar</button></span></figcaption><pre><code>{
+  <span class="t-str">&quot;name&quot;</span>: <span class="t-str">&quot;valorant&quot;</span>,
+  <span class="t-str">&quot;version&quot;</span>: <span class="t-str">&quot;0.0.1&quot;</span>,
+  <span class="t-str">&quot;author&quot;</span>: <span class="t-str">&quot;Tu nombre&quot;</span>,
+  ...
+}</code></pre></figure></div></li></ol></section><section class="part" id="modelo"><h2><span class="pn">2</span>Modelo de datos</h2><ol class="steps"><li class="step" id="paso-4"><span class="dot" aria-hidden="true">4</span><div class="step-in"><h3>Copiar la URL de la API</h3><p>Ve a la URL de la API que vamos a utilizar y cópiala:</p>
+<p class="url"><code>https://valorant-api.com/v1/agents</code></p></div></li><li class="step" id="paso-5"><span class="dot" aria-hidden="true">5</span><div class="step-in"><h3>Pasar el JSON a TypeScript</h3><p>Ve a <strong>JSON to TypeScript</strong>, inserta la URL de Valorant en <em>Fetch URL</em> y copia el TypeScript que genera a la derecha.</p></div></li><li class="step" id="paso-6"><span class="dot" aria-hidden="true">6</span><div class="step-in"><h3>Crear valorant.model.ts</h3><p>Crea la carpeta <code>common</code> dentro de <code>src/app/</code> y dentro el fichero <code>valorant.model.ts</code>. Pega la interfaz.</p>
+<p>Cambia los nombres por defecto: <code>Root</code> pasa a <code>ApiResponseValorant</code>, la interfaz de cada agente (<code>Daum</code> o <code>Data</code>) a <code>Agent</code>, y <code>data</code> es un array de <code>Agent</code>.</p>
+<p>El conversor genera muchas más interfaces (habilidades, rol, voces…). Puedes dejarlas; aquí solo aparecen los campos que usa la app.</p>
+<figure class="code"><figcaption><span class="file">src/app/common/valorant.model.ts</span><span class="lang">TypeScript</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/common/valorant.model.ts">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/common/valorant.model.ts">Copiar</button></span></figcaption><pre><code><span class="t-kw">export</span> <span class="t-kw">interface</span> ApiResponseValorant {
+  status: <span class="t-kw">number</span>;
+  data: Agent[];
+}
+
+<span class="t-kw">export</span> <span class="t-kw">interface</span> Agent {
+  uuid: <span class="t-kw">string</span>;
+  displayName: <span class="t-kw">string</span>;
+  description: <span class="t-kw">string</span>;
+  developerName: <span class="t-kw">string</span>;
+  displayIcon: <span class="t-kw">string</span>;
+  displayIconSmall: <span class="t-kw">string</span>;
+  bustPortrait: <span class="t-kw">string</span>;
+  fullPortrait: <span class="t-kw">string</span>;
+  isPlayableCharacter: <span class="t-kw">boolean</span>;
+}</code></pre></figure></div></li></ol></section><section class="part" id="servicio"><h2><span class="pn">3</span>Servicio, página y rutas</h2><ol class="steps"><li class="step" id="paso-7"><span class="dot" aria-hidden="true">7</span><div class="step-in"><h3>Crear el servicio</h3><p>El servicio es el encargado de conectar con la API.</p>
+<figure class="code"><figcaption><span class="file">Terminal</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de Terminal">Editar</button><button type="button" class="copy" aria-label="Copiar código de Terminal">Copiar</button></span></figcaption><pre><code>ionic g service services/valorant-service --skip-tests</code></pre></figure></div></li><li class="step" id="paso-8"><span class="dot" aria-hidden="true">8</span><div class="step-in"><h3>Crear la página de agentes</h3><p>Ionic añade sola la ruta de la página en <code>app.routes.ts</code>.</p>
+<figure class="code"><figcaption><span class="file">Terminal</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de Terminal">Editar</button><button type="button" class="copy" aria-label="Copiar código de Terminal">Copiar</button></span></figcaption><pre><code>ionic g page pages/agentes --spec=false</code></pre></figure></div></li><li class="step" id="paso-9"><span class="dot" aria-hidden="true">9</span><div class="step-in"><h3>Redirigir a agentes en app.routes.ts</h3><p>Elimina la ruta de home y redirige la ruta vacía a la página de agentes. El archivo queda así:</p>
+<figure class="code"><figcaption><span class="file">src/app/app.routes.ts</span><span class="lang">TypeScript</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/app.routes.ts">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/app.routes.ts">Copiar</button></span></figcaption><pre><code><span class="t-kw">import</span> { Routes } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/router&#x27;</span>;
+
+<span class="t-kw">export</span> <span class="t-kw">const</span> routes: Routes = [
+  {
+    path: <span class="t-str">&#x27;&#x27;</span>,
+    redirectTo: <span class="t-str">&#x27;agentes&#x27;</span>,
+    pathMatch: <span class="t-str">&#x27;full&#x27;</span>,
+  },
+  {
+    path: <span class="t-str">&#x27;agentes&#x27;</span>,
+    loadComponent: () =&gt; <span class="t-kw">import</span>(<span class="t-str">&#x27;./pages/agentes/agentes.page&#x27;</span>).then((m) =&gt; m.AgentesPage),
+  },
+];</code></pre></figure></div></li><li class="step" id="paso-10"><span class="dot" aria-hidden="true">10</span><div class="step-in"><h3>Borrar home</h3><p>Ahora que ninguna ruta la usa, borra la carpeta <code>src/app/home</code> y también <code>src/app/app.component.spec.ts</code>.</p></div></li><li class="step" id="paso-11"><span class="dot" aria-hidden="true">11</span><div class="step-in"><h3>Quitar el error de ESLint</h3><p><strong>File › Settings</strong>, escribe <code>eslint</code> en el buscador, marca <strong>Disable ESLint configuration</strong> y pulsa <strong>OK</strong>.</p></div></li><li class="step" id="paso-12"><span class="dot" aria-hidden="true">12</span><div class="step-in"><h3>Poner la URL en los environments</h3><p>La URL base la ponemos en las variables de entorno, en la carpeta <code>src/environments</code>. Primero en <code>environment.prod.ts</code>:</p>
+<figure class="code"><figcaption><span class="file">src/environments/environment.prod.ts</span><span class="lang">TypeScript</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/environments/environment.prod.ts">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/environments/environment.prod.ts">Copiar</button></span></figcaption><pre><code><span class="t-kw">export</span> <span class="t-kw">const</span> environment = {
+  production: <span class="t-kw">true</span>,
+  URLBase: <span class="t-str">&#x27;https://valorant-api.com/v1&#x27;</span>,
+};</code></pre></figure>
+<p>Y también en <code>environment.ts</code>:</p>
+<figure class="code"><figcaption><span class="file">src/environments/environment.ts</span><span class="lang">TypeScript</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/environments/environment.ts">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/environments/environment.ts">Copiar</button></span></figcaption><pre><code><span class="t-kw">export</span> <span class="t-kw">const</span> environment = {
+  production: <span class="t-kw">false</span>,
+  URLBase: <span class="t-str">&#x27;https://valorant-api.com/v1&#x27;</span>,
+};</code></pre></figure></div></li><li class="step" id="paso-13"><span class="dot" aria-hidden="true">13</span><div class="step-in"><h3>El servicio con el observable</h3><p>En <code>services/valorant-service.ts</code> conectamos con la API usando el environment. La barra de <code>'/agents'</code> va <strong>dentro</strong> de las comillas.</p>
+<figure class="code"><figcaption><span class="file">src/app/services/valorant-service.ts</span><span class="lang">TypeScript</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/services/valorant-service.ts">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/services/valorant-service.ts">Copiar</button></span></figcaption><pre><code><span class="t-kw">import</span> { inject, Service } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/core&#x27;</span>;
+<span class="t-kw">import</span> { HttpClient } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/common/http&#x27;</span>;
+<span class="t-kw">import</span> { Observable } <span class="t-kw">from</span> <span class="t-str">&#x27;rxjs&#x27;</span>;
+<span class="t-kw">import</span> { environment } <span class="t-kw">from</span> <span class="t-str">&#x27;../../environments/environment&#x27;</span>;
+<span class="t-kw">import</span> { ApiResponseValorant } <span class="t-kw">from</span> <span class="t-str">&#x27;../common/valorant.model&#x27;</span>;
+
+<span class="t-dec">@Service</span>()
+<span class="t-kw">export</span> <span class="t-kw">class</span> ValorantService {
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> httpClient: HttpClient = inject(HttpClient);
+
+  getAgents(): Observable<span class="t-tag">&lt;ApiResponseValorant</span>&gt; {
+    <span class="t-kw">return</span> <span class="t-kw">this</span>.httpClient.get<span class="t-tag">&lt;ApiResponseValorant</span>&gt;(environment.URLBase + <span class="t-str">&#x27;/agents&#x27;</span>);
+  }
+}</code></pre></figure></div></li><li class="step" id="paso-14"><span class="dot" aria-hidden="true">14</span><div class="step-in"><h3>Activar HttpClient en main.ts</h3><p>Añadimos <code>provideHttpClient()</code> a los providers para que el servicio pueda hacer la petición. Archivo completo:</p>
+<figure class="code"><figcaption><span class="file">src/main.ts</span><span class="lang">TypeScript</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/main.ts">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/main.ts">Copiar</button></span></figcaption><pre><code><span class="t-kw">import</span> { bootstrapApplication } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/platform-browser&#x27;</span>;
+<span class="t-kw">import</span> { RouteReuseStrategy, provideRouter, withPreloading, PreloadAllModules } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/router&#x27;</span>;
+<span class="t-kw">import</span> { IonicRouteStrategy, provideIonicAngular } <span class="t-kw">from</span> <span class="t-str">&#x27;@ionic/angular&#x27;</span>;
+<span class="t-kw">import</span> { provideHttpClient } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/common/http&#x27;</span>;
+
+<span class="t-kw">import</span> { routes } <span class="t-kw">from</span> <span class="t-str">&#x27;./app/app.routes&#x27;</span>;
+<span class="t-kw">import</span> { AppComponent } <span class="t-kw">from</span> <span class="t-str">&#x27;./app/app.component&#x27;</span>;
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideIonicAngular(),
+    provideRouter(routes, withPreloading(PreloadAllModules)),
+    provideHttpClient(),
+  ],
+});</code></pre></figure></div></li></ol></section><section class="part" id="toast"><h2><span class="pn">4</span>Servicio del toast</h2><ol class="steps"><li class="step" id="paso-15"><span class="dot" aria-hidden="true">15</span><div class="step-in"><h3>Crear el servicio del toast</h3><p>Para generar un toast (aviso flotante). Lo creamos ya, porque la lista lo usará al pulsar los botones del sliding.</p>
+<figure class="code"><figcaption><span class="file">Terminal</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de Terminal">Editar</button><button type="button" class="copy" aria-label="Copiar código de Terminal">Copiar</button></span></figcaption><pre><code>ionic g s services/toast --skip-tests</code></pre></figure>
+<p>Sustituye todo el contenido de <code>services/toast.ts</code> por este. <code>showToast</code> recibe dos textos separados por coma: el mensaje y el color.</p>
+<figure class="code"><figcaption><span class="file">src/app/services/toast.ts</span><span class="lang">TypeScript</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/services/toast.ts">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/services/toast.ts">Copiar</button></span></figcaption><pre><code><span class="t-kw">import</span> { Injectable, inject } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/core&#x27;</span>;
+<span class="t-kw">import</span> { ToastController } <span class="t-kw">from</span> <span class="t-str">&#x27;@ionic/angular&#x27;</span>;
+
+<span class="t-dec">@Injectable</span>({
+  providedIn: <span class="t-str">&#x27;root&#x27;</span>,
+})
+<span class="t-kw">export</span> <span class="t-kw">class</span> ToastService {
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> toastController: ToastController = inject(ToastController);
+
+  <span class="t-kw">async</span> showToast(message: <span class="t-kw">string</span>, color: <span class="t-kw">string</span>): Promise<span class="t-tag">&lt;void</span>&gt; {
+    <span class="t-kw">const</span> toast: HTMLIonToastElement = <span class="t-kw">await</span> <span class="t-kw">this</span>.toastController.create({
+      message,
+      color,
+      position: <span class="t-str">&#x27;middle&#x27;</span>,
+      duration: <span class="t-num">2000</span>,
+    });
+
+    <span class="t-kw">await</span> toast.present();
+  }
+}</code></pre></figure></div></li></ol></section><section class="part" id="lista"><h2><span class="pn">5</span>Lista de agentes</h2><ol class="steps"><li class="step" id="paso-16"><span class="dot" aria-hidden="true">16</span><div class="step-in"><h3>Cargar los agentes en agentes.page.ts</h3><p>Primero el <code>.ts</code>, para que el HTML encuentre todo lo que usa. Guardamos todos los agentes en <code>allAgents</code> y en <code>agents</code> solo los 20 primeros, que son los que se pintan.</p>
+<figure class="code"><figcaption><span class="file">src/app/pages/agentes/agentes.page.ts</span><span class="lang">TypeScript</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/pages/agentes/agentes.page.ts">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/pages/agentes/agentes.page.ts">Copiar</button></span></figcaption><pre><code><span class="t-kw">import</span> { Component, inject, OnInit, signal, WritableSignal } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/core&#x27;</span>;
+<span class="t-kw">import</span> { CommonModule } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/common&#x27;</span>;
+<span class="t-kw">import</span> { FormsModule } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/forms&#x27;</span>;
+<span class="t-kw">import</span> {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonList,
+  IonItem,
+  IonAvatar,
+  IonLabel,
+} <span class="t-kw">from</span> <span class="t-str">&#x27;@ionic/angular&#x27;</span>;
+<span class="t-kw">import</span> { ValorantService } <span class="t-kw">from</span> <span class="t-str">&#x27;../../services/valorant-service&#x27;</span>;
+<span class="t-kw">import</span> { Agent, ApiResponseValorant } <span class="t-kw">from</span> <span class="t-str">&#x27;../../common/valorant.model&#x27;</span>;
+
+<span class="t-dec">@Component</span>({
+  selector: <span class="t-str">&#x27;app-agentes&#x27;</span>,
+  templateUrl: <span class="t-str">&#x27;./agentes.page.html&#x27;</span>,
+  styleUrls: [<span class="t-str">&#x27;./agentes.page.scss&#x27;</span>],
+  imports: [
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonList,
+    IonItem,
+    IonAvatar,
+    IonLabel,
+    CommonModule,
+    FormsModule,
+  ],
+})
+<span class="t-kw">export</span> <span class="t-kw">class</span> AgentesPage <span class="t-kw">implements</span> OnInit {
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> valorantService: ValorantService = inject(ValorantService);
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> allAgents: WritableSignal<span class="t-tag">&lt;Agent</span>[]&gt; = signal<span class="t-tag">&lt;Agent</span>[]&gt;([]); <span class="t-com">// todos</span>
+  agents: WritableSignal<span class="t-tag">&lt;Agent</span>[]&gt; = signal<span class="t-tag">&lt;Agent</span>[]&gt;([]); <span class="t-com">// los que se ven</span>
+
+  ngOnInit(): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.loadAgents();
+  }
+
+  <span class="t-kw">private</span> loadAgents(): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.valorantService.getAgents().subscribe({
+      next: (res: ApiResponseValorant): <span class="t-kw">void</span> =&gt; {
+        <span class="t-kw">this</span>.allAgents.set(res.data); <span class="t-com">// todos los agentes de la API</span>
+        <span class="t-kw">this</span>.agents.set(res.data.slice(<span class="t-num">0</span>, <span class="t-num">20</span>)); <span class="t-com">// en pantalla, los 20 primeros</span>
+      },
+      error: (err: <span class="t-kw">any</span>): <span class="t-kw">void</span> =&gt; {
+        console.error(err);
+      },
+    });
+  }
+}</code></pre></figure>
+<p class="nota">Hasta que hagas el HTML del paso siguiente, la terminal muestra avisos amarillos <code>NG8113</code> (“is not used within the template”). Son normales y desaparecen solos; no son errores.</p></div></li><li class="step" id="paso-17"><span class="dot" aria-hidden="true">17</span><div class="step-in"><h3>Pintar la lista en el HTML</h3><p>Recorremos <code>agents()</code> con <code>@for</code>. Usamos <code>track $index</code> porque la API repite algún agente (Sova sale dos veces).</p>
+<figure class="code"><figcaption><span class="file">src/app/pages/agentes/agentes.page.html</span><span class="lang">HTML</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/pages/agentes/agentes.page.html">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/pages/agentes/agentes.page.html">Copiar</button></span></figcaption><pre><code><span class="t-tag">&lt;ion-header</span>&gt;
+  <span class="t-tag">&lt;ion-toolbar</span> color=<span class="t-str">&quot;primary&quot;</span>&gt;
+    <span class="t-tag">&lt;ion-title</span>&gt;Valorant<span class="t-tag">&lt;/ion-title</span>&gt;
+  <span class="t-tag">&lt;/ion-toolbar</span>&gt;
+<span class="t-tag">&lt;/ion-header</span>&gt;
+
+<span class="t-tag">&lt;ion-content</span> [fullscreen]=<span class="t-str">&quot;true&quot;</span>&gt;
+
+  <span class="t-tag">&lt;ion-list</span>&gt;
+    <span class="t-dec">@for</span> (agent of agents(); track $index) {
+      <span class="t-tag">&lt;ion-item</span>&gt;
+        <span class="t-tag">&lt;ion-avatar</span> slot=<span class="t-str">&quot;end&quot;</span>&gt;
+          <span class="t-tag">&lt;img</span> [src]=<span class="t-str">&quot;agent.displayIcon&quot;</span> alt=<span class="t-str">&quot;&quot;</span>&gt;
+        <span class="t-tag">&lt;/ion-avatar</span>&gt;
+        <span class="t-tag">&lt;ion-label</span>&gt;
+          <span class="t-tag">&lt;h2</span>&gt;{{agent.displayName}}<span class="t-tag">&lt;/h2</span>&gt;
+          <span class="t-tag">&lt;p</span>&gt;{{agent.description}}<span class="t-tag">&lt;/p</span>&gt;
+        <span class="t-tag">&lt;/ion-label</span>&gt;
+      <span class="t-tag">&lt;/ion-item</span>&gt;
+    }
+  <span class="t-tag">&lt;/ion-list</span>&gt;
+
+<span class="t-tag">&lt;/ion-content</span>&gt;</code></pre></figure>
+<p>En el navegador ya salen los 20 primeros agentes.</p></div></li><li class="step" id="paso-18"><span class="dot" aria-hidden="true">18</span><div class="step-in"><h3>Cortar la descripción con tres puntos</h3><p>Solo para los párrafos de la lista (<code>ion-item p</code>), así la descripción del modal se verá entera.</p>
+<figure class="code"><figcaption><span class="file">src/app/pages/agentes/agentes.page.scss</span><span class="lang">SCSS</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/pages/agentes/agentes.page.scss">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/pages/agentes/agentes.page.scss">Copiar</button></span></figcaption><pre><code>ion-item p {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.retrato {
+  display: block;
+  width: <span class="t-num">60</span>%;
+  margin: <span class="t-num">0</span> auto;
+}
+
+.descripcion {
+  color: var(--ion-color-medium);
+}</code></pre></figure>
+<p>Las clases <code>.retrato</code> y <code>.descripcion</code> son para el modal; las dejamos ya preparadas.</p></div></li></ol></section><section class="part" id="infinite"><h2><span class="pn">6</span>Infinite scroll</h2><ol class="steps"><li class="step" id="paso-19"><span class="dot" aria-hidden="true">19</span><div class="step-in"><h3>Cargar de 5 en 5 en agentes.page.ts</h3><p>Cuando llegas al final de la lista, <code>loadMore</code> añade 5 agentes más. Al acabar avisa con <code>complete()</code>, y cuando ya no quedan agentes desactiva el scroll. El <code>setTimeout</code> solo sirve para que se vea un momento el spinner.</p>
+<figure class="code"><figcaption><span class="file">src/app/pages/agentes/agentes.page.ts</span><span class="lang">TypeScript</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/pages/agentes/agentes.page.ts">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/pages/agentes/agentes.page.ts">Copiar</button></span></figcaption><pre><code><span class="t-kw">import</span> { Component, inject, OnInit, signal, WritableSignal } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/core&#x27;</span>;
+<span class="t-kw">import</span> { CommonModule } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/common&#x27;</span>;
+<span class="t-kw">import</span> { FormsModule } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/forms&#x27;</span>;
+<span class="t-kw">import</span> {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonList,
+  IonItem,
+  IonAvatar,
+  IonLabel,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
+} <span class="t-kw">from</span> <span class="t-str">&#x27;@ionic/angular&#x27;</span>;
+<span class="t-kw">import</span> { InfiniteScrollCustomEvent } <span class="t-kw">from</span> <span class="t-str">&#x27;@ionic/angular&#x27;</span>;
+<span class="t-kw">import</span> { ValorantService } <span class="t-kw">from</span> <span class="t-str">&#x27;../../services/valorant-service&#x27;</span>;
+<span class="t-kw">import</span> { Agent, ApiResponseValorant } <span class="t-kw">from</span> <span class="t-str">&#x27;../../common/valorant.model&#x27;</span>;
+
+<span class="t-dec">@Component</span>({
+  selector: <span class="t-str">&#x27;app-agentes&#x27;</span>,
+  templateUrl: <span class="t-str">&#x27;./agentes.page.html&#x27;</span>,
+  styleUrls: [<span class="t-str">&#x27;./agentes.page.scss&#x27;</span>],
+  imports: [
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonList,
+    IonItem,
+    IonAvatar,
+    IonLabel,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    CommonModule,
+    FormsModule,
+  ],
+})
+<span class="t-kw">export</span> <span class="t-kw">class</span> AgentesPage <span class="t-kw">implements</span> OnInit {
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> valorantService: ValorantService = inject(ValorantService);
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> allAgents: WritableSignal<span class="t-tag">&lt;Agent</span>[]&gt; = signal<span class="t-tag">&lt;Agent</span>[]&gt;([]); <span class="t-com">// todos</span>
+  agents: WritableSignal<span class="t-tag">&lt;Agent</span>[]&gt; = signal<span class="t-tag">&lt;Agent</span>[]&gt;([]); <span class="t-com">// los que se ven</span>
+
+  ngOnInit(): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.loadAgents();
+  }
+
+  <span class="t-kw">private</span> loadAgents(): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.valorantService.getAgents().subscribe({
+      next: (res: ApiResponseValorant): <span class="t-kw">void</span> =&gt; {
+        <span class="t-kw">this</span>.allAgents.set(res.data); <span class="t-com">// todos los agentes de la API</span>
+        <span class="t-kw">this</span>.agents.set(res.data.slice(<span class="t-num">0</span>, <span class="t-num">20</span>)); <span class="t-com">// en pantalla, los 20 primeros</span>
+      },
+      error: (err: <span class="t-kw">any</span>): <span class="t-kw">void</span> =&gt; {
+        console.error(err);
+      },
+    });
+  }
+
+  <span class="t-kw">protected</span> loadMore(event: InfiniteScrollCustomEvent): <span class="t-kw">void</span> {
+    setTimeout(() =&gt; {
+      <span class="t-kw">const</span> visibles: <span class="t-kw">number</span> = <span class="t-kw">this</span>.agents().length;
+      <span class="t-kw">this</span>.agents.set(<span class="t-kw">this</span>.allAgents().slice(<span class="t-num">0</span>, visibles + <span class="t-num">5</span>)); <span class="t-com">// 5 más</span>
+      event.target.complete();
+
+      <span class="t-kw">if</span> (<span class="t-kw">this</span>.agents().length &gt;= <span class="t-kw">this</span>.allAgents().length) {
+        event.target.disabled = <span class="t-kw">true</span>; <span class="t-com">// ya no quedan más agentes</span>
+      }
+    }, <span class="t-num">500</span>);
+  }
+}</code></pre></figure>
+<p class="nota">Hasta que hagas el HTML del paso siguiente, la terminal muestra avisos amarillos <code>NG8113</code> (“is not used within the template”). Son normales y desaparecen solos; no son errores.</p></div></li><li class="step" id="paso-20"><span class="dot" aria-hidden="true">20</span><div class="step-in"><h3>El infinite scroll en el HTML</h3><p>Va al final del <code>ion-content</code>, debajo de la lista.</p>
+<figure class="code"><figcaption><span class="file">src/app/pages/agentes/agentes.page.html</span><span class="lang">HTML</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/pages/agentes/agentes.page.html">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/pages/agentes/agentes.page.html">Copiar</button></span></figcaption><pre><code><span class="t-tag">&lt;ion-header</span>&gt;
+  <span class="t-tag">&lt;ion-toolbar</span> color=<span class="t-str">&quot;primary&quot;</span>&gt;
+    <span class="t-tag">&lt;ion-title</span>&gt;Valorant<span class="t-tag">&lt;/ion-title</span>&gt;
+  <span class="t-tag">&lt;/ion-toolbar</span>&gt;
+<span class="t-tag">&lt;/ion-header</span>&gt;
+
+<span class="t-tag">&lt;ion-content</span> [fullscreen]=<span class="t-str">&quot;true&quot;</span>&gt;
+
+  <span class="t-tag">&lt;ion-list</span>&gt;
+    <span class="t-dec">@for</span> (agent of agents(); track $index) {
+      <span class="t-tag">&lt;ion-item</span>&gt;
+        <span class="t-tag">&lt;ion-avatar</span> slot=<span class="t-str">&quot;end&quot;</span>&gt;
+          <span class="t-tag">&lt;img</span> [src]=<span class="t-str">&quot;agent.displayIcon&quot;</span> alt=<span class="t-str">&quot;&quot;</span>&gt;
+        <span class="t-tag">&lt;/ion-avatar</span>&gt;
+        <span class="t-tag">&lt;ion-label</span>&gt;
+          <span class="t-tag">&lt;h2</span>&gt;{{agent.displayName}}<span class="t-tag">&lt;/h2</span>&gt;
+          <span class="t-tag">&lt;p</span>&gt;{{agent.description}}<span class="t-tag">&lt;/p</span>&gt;
+        <span class="t-tag">&lt;/ion-label</span>&gt;
+      <span class="t-tag">&lt;/ion-item</span>&gt;
+    }
+  <span class="t-tag">&lt;/ion-list</span>&gt;
+
+  <span class="t-tag">&lt;ion-infinite-scroll</span> (ionInfinite)=<span class="t-str">&quot;loadMore($event)&quot;</span>&gt;
+    <span class="t-tag">&lt;ion-infinite-scroll-content</span>&gt;<span class="t-tag">&lt;/ion-infinite-scroll-content</span>&gt;
+  <span class="t-tag">&lt;/ion-infinite-scroll</span>&gt;
+
+<span class="t-tag">&lt;/ion-content</span>&gt;</code></pre></figure></div></li></ol></section><section class="part" id="sliding"><h2><span class="pn">7</span>Sliding con toast</h2><ol class="steps"><li class="step" id="paso-21"><span class="dot" aria-hidden="true">21</span><div class="step-in"><h3>Iconos y toasts en agentes.page.ts</h3><p>Registramos los iconos <code>home</code> y <code>planet</code>, añadimos el <code>toastService</code> y dos funciones: una saca el <em>display name</em> en rojo y la otra el <em>developer name</em> en verde.</p>
+<figure class="code"><figcaption><span class="file">src/app/pages/agentes/agentes.page.ts</span><span class="lang">TypeScript</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/pages/agentes/agentes.page.ts">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/pages/agentes/agentes.page.ts">Copiar</button></span></figcaption><pre><code><span class="t-kw">import</span> { Component, inject, OnInit, signal, WritableSignal } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/core&#x27;</span>;
+<span class="t-kw">import</span> { CommonModule } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/common&#x27;</span>;
+<span class="t-kw">import</span> { FormsModule } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/forms&#x27;</span>;
+<span class="t-kw">import</span> {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonList,
+  IonItem,
+  IonAvatar,
+  IonLabel,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
+  IonIcon,
+} <span class="t-kw">from</span> <span class="t-str">&#x27;@ionic/angular&#x27;</span>;
+<span class="t-kw">import</span> { InfiniteScrollCustomEvent } <span class="t-kw">from</span> <span class="t-str">&#x27;@ionic/angular&#x27;</span>;
+<span class="t-kw">import</span> { addIcons } <span class="t-kw">from</span> <span class="t-str">&#x27;ionicons&#x27;</span>;
+<span class="t-kw">import</span> { home, planet } <span class="t-kw">from</span> <span class="t-str">&#x27;ionicons/icons&#x27;</span>;
+<span class="t-kw">import</span> { ValorantService } <span class="t-kw">from</span> <span class="t-str">&#x27;../../services/valorant-service&#x27;</span>;
+<span class="t-kw">import</span> { ToastService } <span class="t-kw">from</span> <span class="t-str">&#x27;../../services/toast&#x27;</span>;
+<span class="t-kw">import</span> { Agent, ApiResponseValorant } <span class="t-kw">from</span> <span class="t-str">&#x27;../../common/valorant.model&#x27;</span>;
+
+<span class="t-dec">@Component</span>({
+  selector: <span class="t-str">&#x27;app-agentes&#x27;</span>,
+  templateUrl: <span class="t-str">&#x27;./agentes.page.html&#x27;</span>,
+  styleUrls: [<span class="t-str">&#x27;./agentes.page.scss&#x27;</span>],
+  imports: [
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonList,
+    IonItem,
+    IonAvatar,
+    IonLabel,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
+    IonIcon,
+    CommonModule,
+    FormsModule,
+  ],
+})
+<span class="t-kw">export</span> <span class="t-kw">class</span> AgentesPage <span class="t-kw">implements</span> OnInit {
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> valorantService: ValorantService = inject(ValorantService);
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> toastService: ToastService = inject(ToastService);
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> allAgents: WritableSignal<span class="t-tag">&lt;Agent</span>[]&gt; = signal<span class="t-tag">&lt;Agent</span>[]&gt;([]); <span class="t-com">// todos</span>
+  agents: WritableSignal<span class="t-tag">&lt;Agent</span>[]&gt; = signal<span class="t-tag">&lt;Agent</span>[]&gt;([]); <span class="t-com">// los que se ven</span>
+
+  constructor() {
+    addIcons({ home, planet });
+  }
+
+  ngOnInit(): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.loadAgents();
+  }
+
+  <span class="t-kw">private</span> loadAgents(): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.valorantService.getAgents().subscribe({
+      next: (res: ApiResponseValorant): <span class="t-kw">void</span> =&gt; {
+        <span class="t-kw">this</span>.allAgents.set(res.data); <span class="t-com">// todos los agentes de la API</span>
+        <span class="t-kw">this</span>.agents.set(res.data.slice(<span class="t-num">0</span>, <span class="t-num">20</span>)); <span class="t-com">// en pantalla, los 20 primeros</span>
+      },
+      error: (err: <span class="t-kw">any</span>): <span class="t-kw">void</span> =&gt; {
+        console.error(err);
+      },
+    });
+  }
+
+  <span class="t-kw">protected</span> loadMore(event: InfiniteScrollCustomEvent): <span class="t-kw">void</span> {
+    setTimeout(() =&gt; {
+      <span class="t-kw">const</span> visibles: <span class="t-kw">number</span> = <span class="t-kw">this</span>.agents().length;
+      <span class="t-kw">this</span>.agents.set(<span class="t-kw">this</span>.allAgents().slice(<span class="t-num">0</span>, visibles + <span class="t-num">5</span>)); <span class="t-com">// 5 más</span>
+      event.target.complete();
+
+      <span class="t-kw">if</span> (<span class="t-kw">this</span>.agents().length &gt;= <span class="t-kw">this</span>.allAgents().length) {
+        event.target.disabled = <span class="t-kw">true</span>; <span class="t-com">// ya no quedan más agentes</span>
+      }
+    }, <span class="t-num">500</span>);
+  }
+
+  <span class="t-kw">protected</span> showDisplayName(agent: Agent): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.toastService.showToast(<span class="t-str">&#x27;Display name: &#x27;</span> + agent.displayName, <span class="t-str">&#x27;danger&#x27;</span>);
+  }
+
+  <span class="t-kw">protected</span> showDeveloperName(agent: Agent): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.toastService.showToast(<span class="t-str">&#x27;Developer name: &#x27;</span> + agent.developerName, <span class="t-str">&#x27;success&#x27;</span>);
+  }
+}</code></pre></figure>
+<p class="nota">Hasta que hagas el HTML del paso siguiente, la terminal muestra avisos amarillos <code>NG8113</code> (“is not used within the template”). Son normales y desaparecen solos; no son errores.</p></div></li><li class="step" id="paso-22"><span class="dot" aria-hidden="true">22</span><div class="step-in"><h3>El sliding en el HTML</h3><p>Cada <code>ion-item</code> va dentro de un <code>ion-item-sliding</code>. Las opciones con <code>side="start"</code> salen al deslizar hacia la derecha (botón home, a la izquierda) y las de <code>side="end"</code> al deslizar hacia la izquierda (botón planet, a la derecha).</p>
+<figure class="code"><figcaption><span class="file">src/app/pages/agentes/agentes.page.html</span><span class="lang">HTML</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/pages/agentes/agentes.page.html">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/pages/agentes/agentes.page.html">Copiar</button></span></figcaption><pre><code><span class="t-tag">&lt;ion-header</span>&gt;
+  <span class="t-tag">&lt;ion-toolbar</span> color=<span class="t-str">&quot;primary&quot;</span>&gt;
+    <span class="t-tag">&lt;ion-title</span>&gt;Valorant<span class="t-tag">&lt;/ion-title</span>&gt;
+  <span class="t-tag">&lt;/ion-toolbar</span>&gt;
+<span class="t-tag">&lt;/ion-header</span>&gt;
+
+<span class="t-tag">&lt;ion-content</span> [fullscreen]=<span class="t-str">&quot;true&quot;</span>&gt;
+
+  <span class="t-tag">&lt;ion-list</span>&gt;
+    <span class="t-dec">@for</span> (agent of agents(); track $index) {
+      <span class="t-tag">&lt;ion-item-sliding</span>&gt;
+        <span class="t-tag">&lt;ion-item-options</span> side=<span class="t-str">&quot;start&quot;</span>&gt;
+          <span class="t-tag">&lt;ion-item-option</span> color=<span class="t-str">&quot;danger&quot;</span> (click)=<span class="t-str">&quot;showDisplayName(agent)&quot;</span>&gt;
+            <span class="t-tag">&lt;ion-icon</span> slot=<span class="t-str">&quot;icon-only&quot;</span> name=<span class="t-str">&quot;home&quot;</span>&gt;<span class="t-tag">&lt;/ion-icon</span>&gt;
+          <span class="t-tag">&lt;/ion-item-option</span>&gt;
+        <span class="t-tag">&lt;/ion-item-options</span>&gt;
+
+        <span class="t-tag">&lt;ion-item</span>&gt;
+          <span class="t-tag">&lt;ion-avatar</span> slot=<span class="t-str">&quot;end&quot;</span>&gt;
+            <span class="t-tag">&lt;img</span> [src]=<span class="t-str">&quot;agent.displayIcon&quot;</span> alt=<span class="t-str">&quot;&quot;</span>&gt;
+          <span class="t-tag">&lt;/ion-avatar</span>&gt;
+          <span class="t-tag">&lt;ion-label</span>&gt;
+            <span class="t-tag">&lt;h2</span>&gt;{{agent.displayName}}<span class="t-tag">&lt;/h2</span>&gt;
+            <span class="t-tag">&lt;p</span>&gt;{{agent.description}}<span class="t-tag">&lt;/p</span>&gt;
+          <span class="t-tag">&lt;/ion-label</span>&gt;
+        <span class="t-tag">&lt;/ion-item</span>&gt;
+
+        <span class="t-tag">&lt;ion-item-options</span> side=<span class="t-str">&quot;end&quot;</span>&gt;
+          <span class="t-tag">&lt;ion-item-option</span> color=<span class="t-str">&quot;success&quot;</span> (click)=<span class="t-str">&quot;showDeveloperName(agent)&quot;</span>&gt;
+            <span class="t-tag">&lt;ion-icon</span> slot=<span class="t-str">&quot;icon-only&quot;</span> name=<span class="t-str">&quot;planet&quot;</span>&gt;<span class="t-tag">&lt;/ion-icon</span>&gt;
+          <span class="t-tag">&lt;/ion-item-option</span>&gt;
+        <span class="t-tag">&lt;/ion-item-options</span>&gt;
+      <span class="t-tag">&lt;/ion-item-sliding</span>&gt;
+    }
+  <span class="t-tag">&lt;/ion-list</span>&gt;
+
+  <span class="t-tag">&lt;ion-infinite-scroll</span> (ionInfinite)=<span class="t-str">&quot;loadMore($event)&quot;</span>&gt;
+    <span class="t-tag">&lt;ion-infinite-scroll-content</span>&gt;<span class="t-tag">&lt;/ion-infinite-scroll-content</span>&gt;
+  <span class="t-tag">&lt;/ion-infinite-scroll</span>&gt;
+
+<span class="t-tag">&lt;/ion-content</span>&gt;</code></pre></figure>
+<p>En el ordenador, arrastra un agente con el ratón hacia un lado para ver el botón.</p></div></li></ol></section><section class="part" id="modal"><h2><span class="pn">8</span>Modal del agente 11</h2><ol class="steps"><li class="step" id="paso-23"><span class="dot" aria-hidden="true">23</span><div class="step-in"><h3>El agente 11 en agentes.page.ts</h3><p>Archivo completo y final. <code>agent11</code> es un <code>computed</code>: se calcula solo a partir de la lista cuando llegan los datos. Usamos la posición 11 del array, que es Killjoy, el agente del avatar y del modal en las capturas.</p>
+<figure class="code"><figcaption><span class="file">src/app/pages/agentes/agentes.page.ts</span><span class="lang">TypeScript</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/pages/agentes/agentes.page.ts">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/pages/agentes/agentes.page.ts">Copiar</button></span></figcaption><pre><code><span class="t-kw">import</span> { Component, computed, inject, OnInit, Signal, signal, WritableSignal } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/core&#x27;</span>;
+<span class="t-kw">import</span> { CommonModule } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/common&#x27;</span>;
+<span class="t-kw">import</span> { FormsModule } <span class="t-kw">from</span> <span class="t-str">&#x27;@angular/forms&#x27;</span>;
+<span class="t-kw">import</span> {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonList,
+  IonItem,
+  IonAvatar,
+  IonLabel,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
+  IonIcon,
+  IonModal,
+  IonFooter,
+  IonButtons,
+  IonButton,
+} <span class="t-kw">from</span> <span class="t-str">&#x27;@ionic/angular&#x27;</span>;
+<span class="t-kw">import</span> { InfiniteScrollCustomEvent } <span class="t-kw">from</span> <span class="t-str">&#x27;@ionic/angular&#x27;</span>;
+<span class="t-kw">import</span> { addIcons } <span class="t-kw">from</span> <span class="t-str">&#x27;ionicons&#x27;</span>;
+<span class="t-kw">import</span> { home, planet } <span class="t-kw">from</span> <span class="t-str">&#x27;ionicons/icons&#x27;</span>;
+<span class="t-kw">import</span> { ValorantService } <span class="t-kw">from</span> <span class="t-str">&#x27;../../services/valorant-service&#x27;</span>;
+<span class="t-kw">import</span> { ToastService } <span class="t-kw">from</span> <span class="t-str">&#x27;../../services/toast&#x27;</span>;
+<span class="t-kw">import</span> { Agent, ApiResponseValorant } <span class="t-kw">from</span> <span class="t-str">&#x27;../../common/valorant.model&#x27;</span>;
+
+<span class="t-dec">@Component</span>({
+  selector: <span class="t-str">&#x27;app-agentes&#x27;</span>,
+  templateUrl: <span class="t-str">&#x27;./agentes.page.html&#x27;</span>,
+  styleUrls: [<span class="t-str">&#x27;./agentes.page.scss&#x27;</span>],
+  imports: [
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonList,
+    IonItem,
+    IonAvatar,
+    IonLabel,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
+    IonIcon,
+    IonModal,
+    IonFooter,
+    IonButtons,
+    IonButton,
+    CommonModule,
+    FormsModule,
+  ],
+})
+<span class="t-kw">export</span> <span class="t-kw">class</span> AgentesPage <span class="t-kw">implements</span> OnInit {
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> valorantService: ValorantService = inject(ValorantService);
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> toastService: ToastService = inject(ToastService);
+  <span class="t-kw">private</span> <span class="t-kw">readonly</span> allAgents: WritableSignal<span class="t-tag">&lt;Agent</span>[]&gt; = signal<span class="t-tag">&lt;Agent</span>[]&gt;([]); <span class="t-com">// todos</span>
+  agents: WritableSignal<span class="t-tag">&lt;Agent</span>[]&gt; = signal<span class="t-tag">&lt;Agent</span>[]&gt;([]); <span class="t-com">// los que se ven</span>
+  agent11: Signal<span class="t-tag">&lt;Agent</span> | undefined&gt; = computed(() =&gt; <span class="t-kw">this</span>.allAgents()[<span class="t-num">11</span>]); <span class="t-com">// elemento número 11</span>
+
+  constructor() {
+    addIcons({ home, planet });
+  }
+
+  ngOnInit(): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.loadAgents();
+  }
+
+  <span class="t-kw">private</span> loadAgents(): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.valorantService.getAgents().subscribe({
+      next: (res: ApiResponseValorant): <span class="t-kw">void</span> =&gt; {
+        <span class="t-kw">this</span>.allAgents.set(res.data); <span class="t-com">// todos los agentes de la API</span>
+        <span class="t-kw">this</span>.agents.set(res.data.slice(<span class="t-num">0</span>, <span class="t-num">20</span>)); <span class="t-com">// en pantalla, los 20 primeros</span>
+      },
+      error: (err: <span class="t-kw">any</span>): <span class="t-kw">void</span> =&gt; {
+        console.error(err);
+      },
+    });
+  }
+
+  <span class="t-kw">protected</span> loadMore(event: InfiniteScrollCustomEvent): <span class="t-kw">void</span> {
+    setTimeout(() =&gt; {
+      <span class="t-kw">const</span> visibles: <span class="t-kw">number</span> = <span class="t-kw">this</span>.agents().length;
+      <span class="t-kw">this</span>.agents.set(<span class="t-kw">this</span>.allAgents().slice(<span class="t-num">0</span>, visibles + <span class="t-num">5</span>)); <span class="t-com">// 5 más</span>
+      event.target.complete();
+
+      <span class="t-kw">if</span> (<span class="t-kw">this</span>.agents().length &gt;= <span class="t-kw">this</span>.allAgents().length) {
+        event.target.disabled = <span class="t-kw">true</span>; <span class="t-com">// ya no quedan más agentes</span>
+      }
+    }, <span class="t-num">500</span>);
+  }
+
+  <span class="t-kw">protected</span> showDisplayName(agent: Agent): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.toastService.showToast(<span class="t-str">&#x27;Display name: &#x27;</span> + agent.displayName, <span class="t-str">&#x27;danger&#x27;</span>);
+  }
+
+  <span class="t-kw">protected</span> showDeveloperName(agent: Agent): <span class="t-kw">void</span> {
+    <span class="t-kw">this</span>.toastService.showToast(<span class="t-str">&#x27;Developer name: &#x27;</span> + agent.developerName, <span class="t-str">&#x27;success&#x27;</span>);
+  }
+}</code></pre></figure>
+<p class="nota">Hasta que hagas el HTML del paso siguiente, la terminal muestra avisos amarillos <code>NG8113</code> (“is not used within the template”). Son normales y desaparecen solos; no son errores.</p></div></li><li class="step" id="paso-24"><span class="dot" aria-hidden="true">24</span><div class="step-in"><h3>Avatar de la cabecera y modal en el HTML</h3><p>Archivo completo y final. El avatar de la cabecera lleva <code>id="abrir-modal"</code>, y el modal se abre con <code>trigger="abrir-modal"</code>. Dentro, la imagen grande, el nombre y la descripción del agente 11. ACEPTAR y CANCELAR van en el pie y cierran el modal con <code>modal.dismiss()</code>.</p>
+<figure class="code"><figcaption><span class="file">src/app/pages/agentes/agentes.page.html</span><span class="lang">HTML</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de src/app/pages/agentes/agentes.page.html">Editar</button><button type="button" class="copy" aria-label="Copiar código de src/app/pages/agentes/agentes.page.html">Copiar</button></span></figcaption><pre><code><span class="t-tag">&lt;ion-header</span>&gt;
+  <span class="t-tag">&lt;ion-toolbar</span> color=<span class="t-str">&quot;primary&quot;</span>&gt;
+    <span class="t-tag">&lt;ion-title</span>&gt;Valorant<span class="t-tag">&lt;/ion-title</span>&gt;
+    <span class="t-tag">&lt;ion-avatar</span> slot=<span class="t-str">&quot;end&quot;</span> id=<span class="t-str">&quot;abrir-modal&quot;</span> <span class="t-kw">class</span>=<span class="t-str">&quot;ion-margin-end&quot;</span>&gt;
+      <span class="t-tag">&lt;img</span> [src]=<span class="t-str">&quot;agent11()?.displayIcon&quot;</span> alt=<span class="t-str">&quot;&quot;</span>&gt;
+    <span class="t-tag">&lt;/ion-avatar</span>&gt;
+  <span class="t-tag">&lt;/ion-toolbar</span>&gt;
+<span class="t-tag">&lt;/ion-header</span>&gt;
+
+<span class="t-tag">&lt;ion-content</span> [fullscreen]=<span class="t-str">&quot;true&quot;</span>&gt;
+
+  <span class="t-tag">&lt;ion-list</span>&gt;
+    <span class="t-dec">@for</span> (agent of agents(); track $index) {
+      <span class="t-tag">&lt;ion-item-sliding</span>&gt;
+        <span class="t-tag">&lt;ion-item-options</span> side=<span class="t-str">&quot;start&quot;</span>&gt;
+          <span class="t-tag">&lt;ion-item-option</span> color=<span class="t-str">&quot;danger&quot;</span> (click)=<span class="t-str">&quot;showDisplayName(agent)&quot;</span>&gt;
+            <span class="t-tag">&lt;ion-icon</span> slot=<span class="t-str">&quot;icon-only&quot;</span> name=<span class="t-str">&quot;home&quot;</span>&gt;<span class="t-tag">&lt;/ion-icon</span>&gt;
+          <span class="t-tag">&lt;/ion-item-option</span>&gt;
+        <span class="t-tag">&lt;/ion-item-options</span>&gt;
+
+        <span class="t-tag">&lt;ion-item</span>&gt;
+          <span class="t-tag">&lt;ion-avatar</span> slot=<span class="t-str">&quot;end&quot;</span>&gt;
+            <span class="t-tag">&lt;img</span> [src]=<span class="t-str">&quot;agent.displayIcon&quot;</span> alt=<span class="t-str">&quot;&quot;</span>&gt;
+          <span class="t-tag">&lt;/ion-avatar</span>&gt;
+          <span class="t-tag">&lt;ion-label</span>&gt;
+            <span class="t-tag">&lt;h2</span>&gt;{{agent.displayName}}<span class="t-tag">&lt;/h2</span>&gt;
+            <span class="t-tag">&lt;p</span>&gt;{{agent.description}}<span class="t-tag">&lt;/p</span>&gt;
+          <span class="t-tag">&lt;/ion-label</span>&gt;
+        <span class="t-tag">&lt;/ion-item</span>&gt;
+
+        <span class="t-tag">&lt;ion-item-options</span> side=<span class="t-str">&quot;end&quot;</span>&gt;
+          <span class="t-tag">&lt;ion-item-option</span> color=<span class="t-str">&quot;success&quot;</span> (click)=<span class="t-str">&quot;showDeveloperName(agent)&quot;</span>&gt;
+            <span class="t-tag">&lt;ion-icon</span> slot=<span class="t-str">&quot;icon-only&quot;</span> name=<span class="t-str">&quot;planet&quot;</span>&gt;<span class="t-tag">&lt;/ion-icon</span>&gt;
+          <span class="t-tag">&lt;/ion-item-option</span>&gt;
+        <span class="t-tag">&lt;/ion-item-options</span>&gt;
+      <span class="t-tag">&lt;/ion-item-sliding</span>&gt;
+    }
+  <span class="t-tag">&lt;/ion-list</span>&gt;
+
+  <span class="t-tag">&lt;ion-infinite-scroll</span> (ionInfinite)=<span class="t-str">&quot;loadMore($event)&quot;</span>&gt;
+    <span class="t-tag">&lt;ion-infinite-scroll-content</span>&gt;<span class="t-tag">&lt;/ion-infinite-scroll-content</span>&gt;
+  <span class="t-tag">&lt;/ion-infinite-scroll</span>&gt;
+
+  <span class="t-tag">&lt;ion-modal</span> #modal trigger=<span class="t-str">&quot;abrir-modal&quot;</span>&gt;
+    <span class="t-tag">&lt;ng-template</span>&gt;
+      <span class="t-tag">&lt;ion-content</span> <span class="t-kw">class</span>=<span class="t-str">&quot;ion-padding&quot;</span>&gt;
+        <span class="t-dec">@if</span> (agent11(); as agent) {
+          <span class="t-tag">&lt;img</span> <span class="t-kw">class</span>=<span class="t-str">&quot;retrato&quot;</span> [src]=<span class="t-str">&quot;agent.fullPortrait&quot;</span> alt=<span class="t-str">&quot;&quot;</span>&gt;
+          <span class="t-tag">&lt;h2</span>&gt;{{agent.displayName}}<span class="t-tag">&lt;/h2</span>&gt;
+          <span class="t-tag">&lt;p</span> <span class="t-kw">class</span>=<span class="t-str">&quot;descripcion&quot;</span>&gt;{{agent.description}}<span class="t-tag">&lt;/p</span>&gt;
+        }
+      <span class="t-tag">&lt;/ion-content</span>&gt;
+
+      <span class="t-tag">&lt;ion-footer</span>&gt;
+        <span class="t-tag">&lt;ion-toolbar</span>&gt;
+          <span class="t-tag">&lt;ion-buttons</span> slot=<span class="t-str">&quot;start&quot;</span>&gt;
+            <span class="t-tag">&lt;ion-button</span> color=<span class="t-str">&quot;primary&quot;</span> (click)=<span class="t-str">&quot;modal.dismiss(null, &#x27;aceptar&#x27;)&quot;</span>&gt;ACEPTAR<span class="t-tag">&lt;/ion-button</span>&gt;
+          <span class="t-tag">&lt;/ion-buttons</span>&gt;
+          <span class="t-tag">&lt;ion-buttons</span> slot=<span class="t-str">&quot;end&quot;</span>&gt;
+            <span class="t-tag">&lt;ion-button</span> color=<span class="t-str">&quot;danger&quot;</span> (click)=<span class="t-str">&quot;modal.dismiss(null, &#x27;cancelar&#x27;)&quot;</span>&gt;CANCELAR<span class="t-tag">&lt;/ion-button</span>&gt;
+          <span class="t-tag">&lt;/ion-buttons</span>&gt;
+        <span class="t-tag">&lt;/ion-toolbar</span>&gt;
+      <span class="t-tag">&lt;/ion-footer</span>&gt;
+    <span class="t-tag">&lt;/ng-template</span>&gt;
+  <span class="t-tag">&lt;/ion-modal</span>&gt;
+
+<span class="t-tag">&lt;/ion-content</span>&gt;</code></pre></figure></div></li><li class="step" id="paso-25"><span class="dot" aria-hidden="true">25</span><div class="step-in"><h3>Probar la app</h3><figure class="code"><figcaption><span class="file">Terminal</span><span class="actions"><span class="edited" hidden>Editado</span><button type="button" class="reset-code" hidden>Restaurar</button><button type="button" class="edit" aria-label="Editar código de Terminal">Editar</button><button type="button" class="copy" aria-label="Copiar código de Terminal">Copiar</button></span></figcaption><pre><code>ionic serve</code></pre></figure>
+<p>Comprueba: la lista empieza con 20 agentes y al bajar carga 5 más cada vez; al deslizar un agente salen home (toast rojo con el <em>display name</em>) y planet (toast verde con el <em>developer name</em>); y el avatar de la cabecera abre el modal de Killjoy, que se cierra con ACEPTAR o CANCELAR.</p></div></li></ol></section>
+</main>
+
+<footer>Apuntes de SGE · API: valorant-api.com</footer>
+
+<script>
+(function () {
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.closest('.code').querySelector('code').innerText;
+      var ok = function () {
+        btn.textContent = 'Copiado'; btn.classList.add('done');
+        setTimeout(function () { btn.textContent = 'Copiar'; btn.classList.remove('done'); }, 1600);
+      };
+      var fallback = function () {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); ok(); } catch (e) { btn.textContent = 'Selecciona y copia'; }
+        document.body.removeChild(ta);
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, fallback);
+        else fallback();
+      } catch (e) { fallback(); }
+    });
+  });
+
+  // ----- editar código -----
+  var KEY = 'guia-valorant-edits';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { saved = {}; }
+  function store() { try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} }
+
+  document.querySelectorAll('.code').forEach(function (fig, i) {
+    var codeEl = fig.querySelector('code');
+    var editBtn = fig.querySelector('.edit');
+    var resetBtn = fig.querySelector('.reset-code');
+    var badge = fig.querySelector('.edited');
+    var original = codeEl.innerHTML;
+    var id = 'c' + i;
+    var hint = null;
+
+    function markEdited(on) { badge.hidden = !on; resetBtn.hidden = !on; }
+
+    if (typeof saved[id] === 'string') { codeEl.textContent = saved[id]; markEdited(true); }
+
+    function finish() {
+      codeEl.setAttribute('contenteditable', 'false');
+      fig.classList.remove('editing');
+      editBtn.textContent = 'Editar';
+      editBtn.setAttribute('aria-pressed', 'false');
+      if (hint) { hint.remove(); hint = null; }
+      var text = codeEl.innerText.replace(/\n$/, '');
+      var tmp = document.createElement('div'); tmp.innerHTML = original;
+      if (text === tmp.innerText.replace(/\n$/, '')) {
+        codeEl.innerHTML = original; delete saved[id]; markEdited(false);
+      } else {
+        codeEl.textContent = text; saved[id] = text; markEdited(true);
+      }
+      store();
+    }
+
+    editBtn.addEventListener('click', function () {
+      if (codeEl.getAttribute('contenteditable') === 'true') { finish(); return; }
+      codeEl.textContent = codeEl.innerText;
+      codeEl.setAttribute('contenteditable', 'true');
+      codeEl.setAttribute('spellcheck', 'false');
+      fig.classList.add('editing');
+      editBtn.textContent = 'Guardar';
+      editBtn.setAttribute('aria-pressed', 'true');
+      hint = document.createElement('p');
+      hint.className = 'edit-hint';
+      hint.textContent = 'Escribe en el código y pulsa Guardar. El cambio se queda guardado en este navegador.';
+      fig.appendChild(hint);
+      codeEl.focus();
+    });
+
+    resetBtn.addEventListener('click', function () {
+      if (codeEl.getAttribute('contenteditable') === 'true') finish();
+      codeEl.innerHTML = original; delete saved[id]; markEdited(false); store();
+    });
+
+    // tabulador inserta espacios en vez de saltar de botón
+    codeEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Tab' && codeEl.getAttribute('contenteditable') === 'true') {
+        e.preventDefault();
+        document.execCommand('insertText', false, '  ');
+      }
+    });
+    // pegar solo texto
+    codeEl.addEventListener('paste', function (e) {
+      if (codeEl.getAttribute('contenteditable') !== 'true') return;
+      e.preventDefault();
+      var t = (e.clipboardData || window.clipboardData).getData('text');
+      document.execCommand('insertText', false, t);
+    });
+  });
+
+  var links = {};
+  document.querySelectorAll('.parts-nav a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        Object.keys(links).forEach(function (k) { links[k].classList.remove('active'); });
+        var a = links[e.target.id];
+        if (a) {
+          a.classList.add('active');
+          // mover solo la barra en horizontal, nunca la página
+          var bar = a.parentNode.parentNode;
+          if (bar.scrollWidth > bar.clientWidth) {
+            bar.scrollLeft = a.offsetLeft - 16;
+          }
+        }
+      });
+    }, { rootMargin: '-70px 0px -75% 0px' });
+    document.querySelectorAll('.part').forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
